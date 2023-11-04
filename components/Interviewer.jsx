@@ -51,23 +51,22 @@ const AudioToText = () => {
                     />
                     <div className="flex p-5">
                         <button
-                            className="bg-green-700 p-5 m-1 rounded"
+                            className={`${listening ? 'bg-green-950' : 'bg-green-500'} p-2 px-10 m-1 rounded`}
                             onClick={startListening}
                             disabled={listening}
                         >
-                            Start Listening
+                            Start
                         </button>
                         <button
-                            className="bg-red-700 p-5 m-1 rounded"
+                            className={`${!listening ? 'bg-red-950' : 'bg-red-500'} p-2 px-10 m-1 rounded`}
                             onClick={stopListening}
                             disabled={!listening}
                         >
-                            Stop Listening
+                            Stop
                         </button>
                         <button
-                            className="bg-gray-700 p-5 m-1 rounded"
+                            className="bg-gray-700 p-2 px-10 m-1 rounded"
                             onClick={stopListening}
-                            disabled={!listening}
                         >
                             Next
                         </button>

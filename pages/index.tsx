@@ -1,4 +1,5 @@
 import { useRouter } from 'next/router';
+import Head from 'next/head';
 import React from 'react';
 
 const Home = () => {
@@ -8,7 +9,9 @@ const Home = () => {
     router.push(`/rooms/${generateRoomId()}`);
   });
 
-  return <></>;
+  return <>
+
+  </>;
 };
 
 export default Home;
