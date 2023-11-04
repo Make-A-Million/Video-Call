@@ -19,9 +19,13 @@ const AudioToText = () => {
         };
 
         recognition.onresult = (event) => {
-            const transcript = event.results[event.results.length - 1][0].transcript;
-            setTranscription((prevTranscription) => prevTranscription + transcript);
+            const result = event.results[event.results.length - 1];
+            if (result.isFinal) {
+                const transcript = result[0].transcript;
+                setTranscription((prevTranscription) => prevTranscription + transcript);
+            }
         };
+
 
         recognition.start();
     };
@@ -32,17 +36,21 @@ const AudioToText = () => {
 
     return (
         <div>
-            <h2>Audio to Text</h2>
-            <button onClick={startListening} disabled={listening}>
-                Start Listening
-            </button>
-            <button onClick={stopListening} disabled={!listening}>
-                Stop Listening
-            </button>
             <div>{transcription}</div>
             <Fragment>
-                <div>
-                    <Chatbox name="User" content={"asldjfklasdjfkl alsjflkasjfkl jaksljflkasjfkl;asfasf"}/>
+                <div className="flex flex-col justify-between">
+                    <Chatbox name="Question" content={"asldjfklasdjfkl alsjflkasjfkl jaksljflkasjfkl;asfasf"}/>
+                    <div className="flex p-5">
+                        <button className="bg-green-700 p-5 m-1 rounded" onClick={startListening} disabled={listening}>
+                            Start Listening
+                        </button>
+                        <button className="bg-red-700 p-5 m-1 rounded" onClick={stopListening} disabled={!listening}>
+                            Stop Listening
+                        </button>
+                        <button className="bg-gray-700 p-5 m-1 rounded" onClick={stopListening} disabled={!listening}>
+                            Next
+                        </button>
+                    </div>
                 </div>
             </Fragment>
         </div>
