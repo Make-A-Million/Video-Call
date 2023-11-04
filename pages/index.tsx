@@ -5,9 +5,6 @@ const Home = () => {
   const router = useRouter();
 
   React.useEffect(() => {
-    // Not the best way to do it..
-    // We got redirected here when coming from livekit.io/kitt
-    // This repo should work without the livekit site
     router.push(`/rooms/${generateRoomId()}`);
   });
 
