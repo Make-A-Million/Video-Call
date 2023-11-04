@@ -1,12 +1,29 @@
 "use client";
-import {useEffect, useState} from 'react';
+import {createRef, Fragment, useEffect, useState} from 'react';
 import '@livekit/components-styles';
 import {
     LiveKitRoom, VideoConference, GridLayout, ParticipantTile, RoomAudioRenderer, ControlBar, useTracks,
 } from '@livekit/components-react';
 import {Track} from "livekit-client";
+import {useScreenshot, createFileName} from 'use-react-screenshot'
+
 
 export default function Page() {
+
+    const ref = createRef(null)
+    const [image, takeScreenShot] = useScreenshot({
+        type: "image/jpeg",
+        quality: 1.0
+    });
+    const download = (image, {name = "img", extension = "jpg"} = {}) => {
+        const a = document.createElement("a");
+        a.href = image;
+        a.download = createFileName(extension, name);
+        a.click();
+    };
+    const downloadScreenshot = () => takeScreenShot(ref.current).then(download);
+
+
     // TODO: get user input for room and name
     const room = "quickstart-room";
     const name = "quickstart-user";
@@ -28,24 +45,44 @@ export default function Page() {
         return <div>Getting token...</div>;
     }
 
-    return (<LiveKitRoom
-        video={true}
-        audio={true}
-        token={token}
-        connectOptions={{autoSubscribe: false}}
-        serverUrl={process.env.NEXT_PUBLIC_LIVEKIT_URL}
-        // Use the default LiveKit theme for nice styles.
-        data-lk-theme="default"
-        style={{height: '100dvh'}}
-    >
-        {/* Your custom component with basic video conferencing functionality. */}
-        <MyVideoConference/>
-        {/* The RoomAudioRenderer takes care of room-wide audio for you. */}
-        <RoomAudioRenderer/>
-        {/* Controls for the user to start/stop audio, video, and screen
+    return (
+        <Fragment>
+            <div   ref={ref}>
+                <LiveKitRoom
+                    video={true}
+                    audio={true}
+                    token={token}
+                    connectOptions={{autoSubscribe: false}}
+                    serverUrl={process.env.NEXT_PUBLIC_LIVEKIT_URL}
+                    // Use the default LiveKit theme for nice styles.
+                    data-lk-theme="default"
+                    style={{height: '100dvh'}}
+                >
+                    {/* Your custom component with basic video conferencing functionality. */}
+                    <MyVideoConference/>
+                    {/* The RoomAudioRenderer takes care of room-wide audio for you. */}
+                    <RoomAudioRenderer/>
+                    {/* Controls for the user to start/stop audio, video, and screen
       share tracks and to leave the room. */}
-        <ControlBar/>
-    </LiveKitRoom>);
+                    <ControlBar/>
+                </LiveKitRoom>
+            </div>
+
+            <div>
+                <button onClick={downloadScreenshot}>Download screenshot</button>
+                {/*<div*/}
+                {/*    ref={ref}*/}
+                {/*    style={{*/}
+                {/*        border: "1px solid #ccc",*/}
+                {/*        padding: "10px",*/}
+                {/*        marginTop: "20px"*/}
+                {/*    }}*/}
+                {/*>*/}
+                {/*    fsdfsdfs*/}
+                {/*</div>*/}
+            </div>
+        </Fragment>
+    );
 }
 
 function MyVideoConference() {

@@ -15,7 +15,8 @@
     "livekit-server-sdk": "^1.2.7",
     "next": "14.0.1",
     "react": "^18",
-    "react-dom": "^18"
+    "react-dom": "^18",
+    "use-react-screenshot": "^3.0.0"
   },
   "devDependencies": {
     "@types/node": "20.8.10",

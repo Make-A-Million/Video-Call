@@ -1,7 +1,3 @@
 {
-  "/not-found": "app/not-found.js",
-  "/page": "app/page.js",
-  "/room/page": "app/room/page.js",
-  "/favicon.ico/route": "app/favicon.ico/route.js",
-  "/api/get-participant-token/route": "app/api/get-participant-token/route.js"
+  "/room/page": "app/room/page.js"
 }
