@@ -1,9 +1,20 @@
+"use client"
 import React, {useState, useEffect, Fragment} from 'react';
 import Chatbox from './Chatbox';
+import {useRouter} from 'next/router';
 
-const AudioToText = () => {
+
+const AudioToText = ({user}) => {
+
+
     const [listening, setListening] = useState(false);
     const [transcription, setTranscription] = useState('');
+
+    const [prompt, setPrompt] = useState(user.prompts.at(-1).content)
+
+    useEffect(() => {
+
+    }, [prompt]);
 
     let recognition = null;
 
@@ -41,38 +52,35 @@ const AudioToText = () => {
     };
 
     const handleNext = async () => {
-        const conversation = [
-            {
-                "role": "system",
-                "content": `This is the question , what is the unit of power?`
-            },
-            {
-                "role": "user",
-                "content": `watt`
-            },
-        ];
 
-        try {
-            const data = {
-                "messages": conversation,
-                "max_tokens": 100,
-                "temperature": 0,
-                "model": "gpt-3.5-turbo"
-            };
+        let prompt = user.prompts
+        prompt.push({
+            "role": "user",
+            "content": transcription
+        })
 
-            const response = await fetch('https://api.openai.com/v1/chat/completions', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    "Authorization": `Bearer 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`
-                },
-                body: JSON.stringify(data)
-            });
-            const json = await response.json();
-            console.log(json)
-        } catch (e) {
-            console.log(e)
+        const data = {
+            id: user._id,
+            prompt
         }
+        fetch(`http://localhost:5000/api/v1/gpt/check`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(data)
+        })
+            .then(res => res.json())
+            .then(data => {
+                if(data.success){
+                    console.log(data)
+                    setPrompt(data.next)
+                    setTranscription('')
+                }
+            })
+            .catch((err) => {
+                console.error(err);
+            })
     }
 
     return (
@@ -82,7 +90,7 @@ const AudioToText = () => {
                 <div className="flex flex-col justify-between">
                     <Chatbox
                         name="Question"
-                        content={"asldjfklasdjfkl alsjflkasjfkl jaksljflkasjfkl;asfasf"}
+                        content={prompt}
                     />
                     <div className="flex p-5">
                         <button

@@ -30,9 +30,10 @@ const BotIdentity = 'KITT';
 
 export interface VideoConferenceProps extends React.HTMLAttributes<HTMLDivElement> {
     chatMessageFormatter?: MessageFormatter;
+    user: any;
 }
 
-export function VideoConference({chatMessageFormatter, ...props}: VideoConferenceProps) {
+export function VideoConference({chatMessageFormatter, user, ...props}: VideoConferenceProps) {
     const isMobile = useMediaQuery(`(max-width: 660px)`);
 
     const tracks = useTracks(
@@ -82,7 +83,7 @@ export function VideoConference({chatMessageFormatter, ...props}: VideoConferenc
                                             <div className="flex justify-around w-full">
                                                     <ParticipantTile {...track} />
                                                 <div className="w-[70%]">
-                                                    <Interviewer/>
+                                                    <Interviewer user={user}/>
                                                 </div>
                                             </div>
                                         )

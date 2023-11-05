@@ -4,7 +4,7 @@ import { RoomOptions, VideoPresets } from 'livekit-client';
 import type { NextPage } from 'next';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
-import { useMemo, useState } from 'react';
+import {useEffect, useMemo, useState} from 'react';
 import { useServerUrl } from '../../lib/client-utils';
 import { VideoConference } from '../../components/VideoConference';
 import { LocalUserChoices, PreJoin } from '../../components/PreJoin';
@@ -14,6 +14,33 @@ const nameReg = new RegExp('^[a-zA-Z0-9_-]{1,64}$');
 const Home: NextPage = () => {
   const router = useRouter();
   const { name: roomName } = router.query;
+  const [user, setUser] = useState<any>(null);
+
+  useEffect(() => {
+
+    if(roomName) {
+      fetch(`http://localhost:5000/api/v1/user/room/${roomName}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json"
+        },
+      })
+          .then(res => res.json())
+          .then(data => {
+            if(!data.success) {
+              alert("Room not found")
+                router.push("/notfound")
+            }
+            else {
+                setUser(data.user)
+            }
+          })
+          .catch((err) => {
+            console.error(err);
+          })
+    }
+
+    }, [roomName]);
 
   const [preJoinChoices, setPreJoinChoices] = useState<LocalUserChoices | undefined>(undefined);
   return (
@@ -26,6 +53,7 @@ const Home: NextPage = () => {
       <main data-lk-theme="default">
         {roomName && !Array.isArray(roomName) && preJoinChoices ? (
           <ActiveRoom
+              user={user}
             roomName={roomName}
             userChoices={preJoinChoices}
             onLeave={() => {
@@ -63,9 +91,10 @@ type ActiveRoomProps = {
   roomName: string;
   region?: string;
   onLeave?: () => void;
+  user: any;
 };
 
-const ActiveRoom = ({ roomName, userChoices, onLeave }: ActiveRoomProps) => {
+const ActiveRoom = ({ user, roomName, userChoices, onLeave }: ActiveRoomProps) => {
   const token = useToken(process.env.NEXT_PUBLIC_LK_TOKEN_ENDPOINT, roomName, {
     userInfo: {
       identity: userChoices.username,
@@ -112,7 +141,7 @@ const ActiveRoom = ({ roomName, userChoices, onLeave }: ActiveRoomProps) => {
           audio={userChoices.audioEnabled}
           onDisconnected={onLeave}
         >
-          <VideoConference chatMessageFormatter={formatChatMessageLinks} />
+          <VideoConference user={user} chatMessageFormatter={formatChatMessageLinks} />
         </LiveKitRoom>
       )}
     </>
