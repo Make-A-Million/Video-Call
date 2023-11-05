@@ -1,4 +1,4 @@
-import React, { useState, useEffect, Fragment } from 'react';
+import React, {useState, useEffect, Fragment} from 'react';
 import Chatbox from './Chatbox';
 
 const AudioToText = () => {
@@ -40,6 +40,41 @@ const AudioToText = () => {
         }
     };
 
+    const handleNext = async () => {
+        const conversation = [
+            {
+                "role": "system",
+                "content": `This is the question , what is the unit of power?`
+            },
+            {
+                "role": "user",
+                "content": `watt`
+            },
+        ];
+
+        try {
+            const data = {
+                "messages": conversation,
+                "max_tokens": 100,
+                "temperature": 0,
+                "model": "gpt-3.5-turbo"
+            };
+
+            const response = await fetch('https://api.openai.com/v1/chat/completions', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    "Authorization": `Bearer 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`
+                },
+                body: JSON.stringify(data)
+            });
+            const json = await response.json();
+            console.log(json)
+        } catch (e) {
+            console.log(e)
+        }
+    }
+
     return (
         <div>
             <div>{transcription}</div>
@@ -66,10 +101,11 @@ const AudioToText = () => {
                         </button>
                         <button
                             className="bg-gray-700 p-2 px-10 m-1 rounded"
-                            onClick={stopListening}
+                            onClick={handleNext}
                         >
                             Next
                         </button>
+
                     </div>
                 </div>
             </Fragment>
