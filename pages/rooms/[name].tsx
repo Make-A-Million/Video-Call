@@ -8,6 +8,7 @@ import {useEffect, useMemo, useState} from 'react';
 import { useServerUrl } from '../../lib/client-utils';
 import { VideoConference } from '../../components/VideoConference';
 import { LocalUserChoices, PreJoin } from '../../components/PreJoin';
+import {BASE_URL} from "../../lib/api";
 
 const nameReg = new RegExp('^[a-zA-Z0-9_-]{1,64}$');
 
@@ -19,7 +20,7 @@ const Home: NextPage = () => {
   useEffect(() => {
 
     if(roomName) {
-      fetch(`http://localhost:5000/api/v1/user/room/${roomName}`, {
+      fetch(`${BASE_URL}/api/v1/user/room/${roomName}`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json"

@@ -1,5 +1,6 @@
 import React, {useEffect} from 'react';
 import {useRouter} from 'next/router';
+import {BASE_URL} from "../../lib/api";
 
 const Join = () => {
 
@@ -8,7 +9,7 @@ const Join = () => {
 
 
     const handleClick = () => {
-        fetch(`http://localhost:5000/api/v1/user/room/${roomName}`, {
+        fetch(`${BASE_URL}/api/v1/user/room/${roomName}`, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json"

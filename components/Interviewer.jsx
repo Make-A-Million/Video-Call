@@ -2,6 +2,7 @@
 import React, {useState, useEffect, Fragment} from 'react';
 import Chatbox from './Chatbox';
 import {useRouter} from 'next/router';
+import {BASE_URL} from "../lib/api";
 
 
 const AudioToText = ({user}) => {
@@ -63,7 +64,7 @@ const AudioToText = ({user}) => {
             id: user._id,
             prompt
         }
-        fetch(`http://localhost:5000/api/v1/gpt/check`, {
+        fetch(`${BASE_URL}/api/v1/gpt/check`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
